@@ -7,4 +7,22 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-// Здесь будет соединение с БД
+// Файлы необходимые для соединения с БД
+include_once "./Config/Database.php";
+include_once "../Objects/User.php";
+
+// Получаем соединение с базой данных
+$database = new Database();
+$db = $database->getConnection();
+
+// Создание объекта "User"
+$user = new User($db);
+
+// Получаем данные
+$data = json_decode(file_get_contents("php://input"));
+
+// Устанавливаем значения
+$user->email = $data->email;
+$email_exists = $user->emailExists();
+
+// Файлы для JWT будут здесь
