@@ -19,4 +19,16 @@ $db = $database->getConnection();
 // Создание объекта "User"
 $user = new User($db);
 
-// Отправляемые данные будут здесь
+// Получаем данные
+$data = json_decode(file_get_contents("php://input"));
+
+// Устанавливаем значения
+$user->firstname = $data->firstname;
+$user->lastname = $data->lastname;
+$user->email = $data->email;
+$user->password = $data->password;
+
+// Поверка на существование e-mail в БД
+// $email_exists = $user->emailExists();
+
+// Здесь будет метод create()
