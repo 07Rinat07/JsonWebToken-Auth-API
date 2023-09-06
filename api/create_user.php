@@ -31,4 +31,27 @@ $user->password = $data->password;
 // Поверка на существование e-mail в БД
 // $email_exists = $user->emailExists();
 
-// Здесь будет метод create()
+// Создание пользователя
+if (
+    !empty($user->firstname) &&
+    !empty($user->email) &&
+    // $email_exists == 0 &&
+    !empty($user->password) &&
+    $user->create()
+) {
+    // Устанавливаем код ответа
+    http_response_code(200);
+
+    // Покажем сообщение о том, что пользователь был создан
+    echo json_encode(array("message" => "Пользователь был создан"));
+}
+
+// Сообщение, если не удаётся создать пользователя
+else {
+
+    // Устанавливаем код ответа
+    http_response_code(400);
+
+    // Покажем сообщение о том, что создать пользователя не удалось
+    echo json_encode(array("message" => "Невозможно создать пользователя"));
+}
