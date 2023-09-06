@@ -93,9 +93,74 @@
         });
 
         // Выполнение кода при отправке формы
+        $(document).on("submit", "#sign_up_form", function () {
 
-        // Показать форму входа при клике на кнопку
+            // Получаем данные формы
+            const sign_up_form = $(this);
+            const form_data = JSON.stringify(sign_up_form.serializeObject());
 
+            // Отправка данных формы в API
+            $.ajax({
+                url: "api/create_user.php",
+                type: "POST",
+                contentType: "application/json",
+                data: form_data,
+                success: result => {
+
+                    // В случае удачного завершения запроса к серверу,
+                    // сообщим пользователю, что он успешно зарегистрировался и очистим поля ввода
+                    $("#response").html("<div class='alert alert-success'>Регистрация завершена успешно. Пожалуйста, войдите</div>");
+                    sign_up_form.find("input").val("");
+                },
+                error: (xhr, resp, text) => {
+
+                    // При ошибке сообщить пользователю, что регистрация не удалась
+                    $("#response").html("<div class='alert alert-danger'>Невозможно зарегистрироваться. Пожалуйста, свяжитесь с администратором</div>");
+                }
+            });
+
+            return false;
+        });
+        // Показа формы входа
+        $(document).on("click", "#login", () => {
+            showLoginPage();
+        });
+
+// При отправке формы входа
+        $(document).on("submit", "#login_form", function () {
+
+            // Получаем данные формы
+            const login_form = $(this);
+            const form_data = JSON.stringify(login_form.serializeObject());
+
+            // Отправка данных формы в API
+            $.ajax({
+                url: "api/login.php",
+                type: "POST",
+                contentType: "application/json",
+                data: form_data,
+                success: result => {
+
+                    // Сохраним JWT в куки
+                    setCookie("jwt", result.jwt, 1);
+
+                    // Показ домашней страницы и сообщение об успешном входе
+                    showHomePage();
+                    $("#response").html("<div class='alert alert-success'>Успешный вход в систему.</div>");
+
+                },
+                error: (xhr, resp, text) => {
+
+                    // При ошибке сообщим пользователю, что вход в систему не выполнен и очистим поля ввода
+                    $("#response").html("<div class='alert alert-danger'>Ошибка входа. Email или пароль указан неверно.</div>");
+                    login_form.find("input").val("");
+                }
+            });
+
+            return false;
+        });
+
+// Показ домашней страницы
         // Удаление всех быстрых сообщений
         function clearResponse() {
             $("#response").html("");
